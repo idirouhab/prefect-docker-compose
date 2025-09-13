@@ -1,0 +1,56 @@
+services:
+  prefect-server:
+    image: prefecthq/prefect:3-latest
+    command: prefect server start --host 0.0.0.0
+    ports:
+      - "4200:4200"
+    environment:
+      PREFECT_HOME: /root/.prefect
+    volumes:
+      - prefect-data:/root/.prefect
+
+  # A worker that runs your code directly (Process work pool).
+  worker:
+    image: prefecthq/prefect:3-latest
+    depends_on:
+      - prefect-server
+    environment:
+      PREFECT_API_URL: http://prefect-server:4200/api
+      PREFECT_LOGGING_LEVEL: INFO
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: >
+      bash -lc "
+        prefect work-pool create -t process process-pool || true &&
+        prefect worker start --pool process-pool --type process
+      "
+
+  # A convenience shell to run Prefect CLI commands against the server.
+  cli:
+    image: prefecthq/prefect:3-latest
+    depends_on:
+      - prefect-server
+    environment:
+      PREFECT_API_URL: http://prefect-server:4200/api
+    working_dir: /app
+    volumes:
+      - .:/app
+    tty: true
+
+  serve:
+    image: prefecthq/prefect:3-latest
+    depends_on:
+      - prefect-server
+    environment:
+      PREFECT_API_URL: http://prefect-server:4200/api
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: >
+      bash -lc "
+        prefect flow serve ./hello.py:hello --name hello-dev
+      "
+
+volumes:
+  prefect-data:
