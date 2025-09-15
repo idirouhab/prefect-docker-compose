@@ -8,7 +8,7 @@ You can edit Python flows locally, see them in the Prefect UI, and run them with
 ## 🚀 Quick start
 
 ### 1. Start Prefect server + worker
-```bash
+```bat
 docker compose up -d prefect-server worker
 ````
 
@@ -21,19 +21,19 @@ docker compose up -d prefect-server worker
 
 The worker needs a pool to poll. Run this once:
 
-```bash
+```bat
 docker compose run --rm cli prefect work-pool create --type process process-pool
 ```
 
 Confirm it exists:
 
-```bash
+```bat
 docker compose run --rm cli prefect work-pool ls
 ```
 
 Restart the worker so it connects:
 
-```bash
+```bat
 docker compose up -d worker
 ```
 
@@ -87,13 +87,13 @@ if __name__ == "__main__":
 
 Register your `hello` flow:
 
-```bash
+```bat
 docker compose run --rm cli python deploy.py hello.py:hello
 ```
 
 Check deployments:
 
-```bash
+```bat
 docker compose run --rm cli prefect deployment ls
 ```
 
@@ -103,13 +103,19 @@ You should see `hello/hello-dev`.
 
 ### 5. Run the flow
 
-From CLI:
+#### On **Windows CMD** (no quotes):
 
-```bash
-docker compose run --rm cli prefect deployment run 'hello/hello-dev' --watch
+```bat
+docker compose run --rm cli prefect deployment run hello/hello-dev --watch
 ```
 
-Or from the UI: **Deployments → hello / hello-dev → Run**.
+#### On **Windows PowerShell** (use double quotes):
+
+```powershell
+docker compose run --rm cli prefect deployment run "hello/hello-dev" --watch
+```
+
+Or trigger from the UI: **Deployments → hello / hello-dev → Run**.
 Logs show up both in the UI and in the CLI.
 
 ---
@@ -127,15 +133,22 @@ Logs show up both in the UI and in the CLI.
 
 2. Register it:
 
-   ```bash
+   ```bat
    docker compose run --rm cli python deploy.py greet.py:greet
    ```
 
-3. Run it:
+3. Run it (same Windows rules apply):
 
-   ```bash
-   docker compose run --rm cli prefect deployment run 'greet/greet-dev' --watch
-   ```
+    * CMD:
+
+      ```bat
+      docker compose run --rm cli prefect deployment run greet/greet-dev --watch
+      ```
+    * PowerShell:
+
+      ```powershell
+      docker compose run --rm cli prefect deployment run "greet/greet-dev" --watch
+      ```
 
 ---
 
@@ -143,31 +156,31 @@ Logs show up both in the UI and in the CLI.
 
 * View server logs:
 
-  ```bash
+  ```bat
   docker compose logs -f prefect-server
   ```
 
 * View worker logs:
 
-  ```bash
+  ```bat
   docker compose logs -f worker
   ```
 
 * List all deployments:
 
-  ```bash
+  ```bat
   docker compose run --rm cli prefect deployment ls
   ```
 
 * List all work pools:
 
-  ```bash
+  ```bat
   docker compose run --rm cli prefect work-pool ls
   ```
 
 * Tear everything down:
 
-  ```bash
+  ```bat
   docker compose down
   ```
 

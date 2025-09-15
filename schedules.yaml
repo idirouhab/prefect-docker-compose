@@ -1,0 +1,13 @@
+defaults:
+  work_pool: process-pool
+  timezone: Europe/Berlin
+
+flows:
+  - entrypoint: hello.py:hello        # file.py:flow_func
+    name: hello-weekly                # deployment name
+    schedule:
+      type: cron
+      cron: "* * * * 1"
+      timezone: Europe/Berlin
+    parameters:
+      name: "world"
